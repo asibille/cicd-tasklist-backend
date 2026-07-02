@@ -62,10 +62,136 @@ describe("TaskController", () => {
 		});
 	});
 
-	// ... TODO: Add more tests
-	/*
-	describe("getTaskById", () => {
-		...	
+describe("getTaskById", () => {
+		it("should return 200 with task", async () => {
+			mockService.findById.mockResolvedValue(mockTask);
+			const req = createMockRequest({ params: { id: "1" } });
+			const res = createMockResponse();
+			await taskController.getTaskById(req, res);
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.json).toHaveBeenCalledWith(mockTask);
+		});
+
+		it("should return 404 when task not found", async () => {
+			mockService.findById.mockResolvedValue(null);
+			const req = createMockRequest({ params: { id: "999" } });
+			const res = createMockResponse();
+			await taskController.getTaskById(req, res);
+			expect(res.status).toHaveBeenCalledWith(404);
+		});
+
+		it("should return 400 when id is invalid", async () => {
+			const req = createMockRequest({ params: { id: "abc" } });
+			const res = createMockResponse();
+			await taskController.getTaskById(req, res);
+			expect(res.status).toHaveBeenCalledWith(400);
+		});
+
+		it("should return 500 when service throws", async () => {
+			mockService.findById.mockRejectedValue(new Error("DB error"));
+			const req = createMockRequest({ params: { id: "1" } });
+			const res = createMockResponse();
+			await taskController.getTaskById(req, res);
+			expect(res.status).toHaveBeenCalledWith(500);
+		});
 	});
-	*/
+
+	describe("createTask", () => {
+		it("should return 201 with created task", async () => {
+			mockService.create.mockResolvedValue(mockTask);
+			const req = createMockRequest({ body: { title: "Test Task", description: "Test" } });
+			const res = createMockResponse();
+			await taskController.createTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(201);
+			expect(res.json).toHaveBeenCalledWith(mockTask);
+		});
+
+		it("should return 400 when title is missing", async () => {
+			const req = createMockRequest({ body: {} });
+			const res = createMockResponse();
+			await taskController.createTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(400);
+		});
+
+		it("should return 400 when title is empty string", async () => {
+			const req = createMockRequest({ body: { title: "   " } });
+			const res = createMockResponse();
+			await taskController.createTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(400);
+		});
+
+		it("should return 500 when service throws", async () => {
+			mockService.create.mockRejectedValue(new Error("DB error"));
+			const req = createMockRequest({ body: { title: "Task" } });
+			const res = createMockResponse();
+			await taskController.createTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(500);
+		});
+	});
+
+	describe("updateTask", () => {
+		it("should return 200 with updated task", async () => {
+			mockService.update.mockResolvedValue({ ...mockTask, title: "Updated" });
+			const req = createMockRequest({ params: { id: "1" }, body: { title: "Updated" } });
+			const res = createMockResponse();
+			await taskController.updateTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(200);
+		});
+
+		it("should return 404 when task not found", async () => {
+			mockService.update.mockRejectedValue(new Error("Task not found"));
+			const req = createMockRequest({ params: { id: "999" }, body: { title: "Updated" } });
+			const res = createMockResponse();
+			await taskController.updateTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(404);
+		});
+
+		it("should return 400 when id is invalid", async () => {
+			const req = createMockRequest({ params: { id: "abc" }, body: { title: "Updated" } });
+			const res = createMockResponse();
+			await taskController.updateTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(400);
+		});
+
+		it("should return 500 when service throws unexpected error", async () => {
+			mockService.update.mockRejectedValue(new Error("DB error"));
+			const req = createMockRequest({ params: { id: "1" }, body: { title: "Updated" } });
+			const res = createMockResponse();
+			await taskController.updateTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(500);
+		});
+	});
+
+	describe("deleteTask", () => {
+		it("should return 204 when task deleted", async () => {
+			mockService.remove.mockResolvedValue(undefined);
+			const req = createMockRequest({ params: { id: "1" } });
+			const res = createMockResponse();
+			await taskController.deleteTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(204);
+		});
+
+		it("should return 404 when task not found", async () => {
+			mockService.remove.mockRejectedValue(new Error("Task not found"));
+			const req = createMockRequest({ params: { id: "999" } });
+			const res = createMockResponse();
+			await taskController.deleteTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(404);
+		});
+
+		it("should return 400 when id is invalid", async () => {
+			const req = createMockRequest({ params: { id: "abc" } });
+			const res = createMockResponse();
+			await taskController.deleteTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(400);
+		});
+
+		it("should return 500 when service throws unexpected error", async () => {
+			mockService.remove.mockRejectedValue(new Error("DB error"));
+			const req = createMockRequest({ params: { id: "1" } });
+			const res = createMockResponse();
+			await taskController.deleteTask(req, res);
+			expect(res.status).toHaveBeenCalledWith(500);
+		});
+	});
 });
