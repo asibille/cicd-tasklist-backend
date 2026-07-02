@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKER_IMAGE          = 'axsibille/tasklist-backend'
         IMAGE_TAG             = "${BUILD_NUMBER}"
-        SONAR_PROJECT_KEY     = 'Axel-tasklist-backend'
+        SONAR_PROJECT_KEY     = 'cicd-tasklist-backend-certifiant1'
         SONAR_PROJECT_NAME    = 'Tasklist Backend'
     }
 
