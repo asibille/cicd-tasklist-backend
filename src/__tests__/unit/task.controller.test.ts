@@ -164,7 +164,7 @@ describe("getTaskById", () => {
 
 	describe("deleteTask", () => {
 		it("should return 204 when task deleted", async () => {
-			mockService.remove.mockResolvedValue(undefined);
+			mockService.remove.mockResolvedValue(mockTask);
 			const req = createMockRequest({ params: { id: "1" } });
 			const res = createMockResponse();
 			await taskController.deleteTask(req, res);
